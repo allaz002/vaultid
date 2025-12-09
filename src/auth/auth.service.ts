@@ -128,12 +128,12 @@ export class AuthService {
       throw new UnauthorizedException('Refresh token has expired.');
     }
 
-    /*
-        await this.prisma.refreshToken.update({
-            where: { id: existing.id },
-            data: { revoked: true },
-        })
-        */
+    
+    await this.prisma.refreshToken.update({
+        where: { id: existing.id },
+        data: { revoked: true },
+    })
+        
 
     const tokens = await this.generateTokensForUser({
       id: existing.user.id,
