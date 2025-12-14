@@ -7,11 +7,13 @@ export class MailService {
   private readonly resend: Resend | null;
   private readonly fromEmail: string;
   private readonly appBaseUrl: string;
-
+  private readonly frontendBaseUrl: string;
+  
   constructor(){
     const apiKey = process.env.RESEND_API_KEY;
     this.fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@example.com';
     this.appBaseUrl = process.env.APP_BASE_URL || 'http://localhost:3000';
+    this.frontendBaseUrl = process.env.FRONTEND_BASE_URL || 'http://localhost:3001';
 
     if(apiKey) {
       this.resend = new Resend(apiKey);
@@ -23,7 +25,8 @@ export class MailService {
   }
 
   async sendEmailVerification(email: string, token: string) {
-    const verificationLink = `${this.appBaseUrl}/auth/verify-email?token=${token}`;
+    const verificationLink = `${this.frontendBaseUrl}/verify-email?token=${token}`;
+
 
     if(!this.resend){
       this.logger.log(`FAKE email verification to ${email}: ${verificationLink}`,);
@@ -51,7 +54,7 @@ export class MailService {
 
 
   async sendPasswordReset(email: string, token: string) {
-    const resetLink = `${this.appBaseUrl}/auth/reset-password?token=${token}`;
+    const resetLink = `${this.frontendBaseUrl}/reset-password?token=${token}`;
 
     if(!this.resend){
       this.logger.log(`FAKE password reset to ${email}: ${resetLink}`);
