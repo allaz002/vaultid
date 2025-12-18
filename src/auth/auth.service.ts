@@ -125,17 +125,30 @@ export class AuthService {
       include: { user: true },
     });
 
-    if (!existing || existing.revoked) {
-      throw new UnauthorizedException('Invalid refresh token.');
+    if (!existing) {
+      throw new UnauthorizedException('Invalid refresh token.')
     }
+
+    if (existing.revoked || existing.used) {
+      await this.prisma.refreshToken.updateMany({
+        where: { userId: existing.userId },
+        data: { revoked: true },
+      });
+
+      throw new UnauthorizedException('Refresh token reuse detected.');
+    }
+
     if (existing.expiresAt < new Date()) {
+      await this.prisma.refreshToken.update({
+        where: { id: existing.id },
+        data: { revoked: true },
+        });
       throw new UnauthorizedException('Refresh token has expired.');
     }
 
-    
     await this.prisma.refreshToken.update({
         where: { id: existing.id },
-        data: { revoked: true },
+        data: { revoked: true, used: true },
     })
         
 
