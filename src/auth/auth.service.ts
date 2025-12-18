@@ -14,6 +14,8 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { MailService } from '../mail/mail.service';
 
+const ACCESS_TOKEN_EXPIRES_IN = "15m";
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -25,7 +27,9 @@ export class AuthService {
 
   private async generateTokensForUser(user: { id: number; email: string }) {
     const payload = { sub: user.id, email: user.email };
-    const accessToken = await this.jwtService.signAsync(payload);
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn: ACCESS_TOKEN_EXPIRES_IN,
+    });
 
     const refreshToken = randomUUID();
     const expiresAt = add(new Date(), { days: 7 });
