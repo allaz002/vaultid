@@ -73,7 +73,7 @@ describe('AuthService', () => {
     mockUsersService.findByEmail.mockResolvedValue({
       id: 1,
       email: 'existing@example.com',
-    })
+    });
 
     await expect(
       service.register({
@@ -97,7 +97,7 @@ describe('AuthService', () => {
     mockJwtService.signAsync.mockResolvedValue('ACCESS_TOKEN');
 
     mockPrismaService.refreshToken.create.mockResolvedValue({});
-    mockPrismaService.emailVerificationToken.create.mockResolvedValue({})
+    mockPrismaService.emailVerificationToken.create.mockResolvedValue({});
 
     const result = await service.register({
       email: 'new@example.com',
@@ -109,7 +109,7 @@ describe('AuthService', () => {
       'new@example.com',
       'hashedPw',
       'New User',
-    )
+    );
 
     expect(mockMailService.sendEmailVerification).toHaveBeenCalled();
 
@@ -117,7 +117,7 @@ describe('AuthService', () => {
       id: 1,
       email: 'new@example.com',
       name: 'New User',
-    })
+    });
     expect(result.accessToken).toBe('ACCESS_TOKEN');
     expect(result.refreshToken).toBeDefined();
   });
@@ -135,7 +135,9 @@ describe('AuthService', () => {
   it('should return tokens on successful login', async () => {
     const user = { id: 1, email: 'login@example.com' };
 
-    const validateSpy = jest.spyOn(service as any, 'validateUser').mockResolvedValue(user);
+    const validateSpy = jest
+      .spyOn(service as any, 'validateUser')
+      .mockResolvedValue(user);
 
     mockJwtService.signAsync.mockResolvedValue('ACCESS_TOKEN');
     mockPrismaService.refreshToken.create.mockResolvedValue({});
@@ -165,5 +167,4 @@ describe('AuthService', () => {
 
     expect(result).toEqual({ success: true });
   });
-
 });

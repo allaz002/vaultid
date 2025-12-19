@@ -14,7 +14,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { MailService } from '../mail/mail.service';
 
-const ACCESS_TOKEN_EXPIRES_IN = "15m";
+const ACCESS_TOKEN_EXPIRES_IN = '15m';
 
 @Injectable()
 export class AuthService {
@@ -126,7 +126,7 @@ export class AuthService {
     });
 
     if (!existing) {
-      throw new UnauthorizedException('Invalid refresh token.')
+      throw new UnauthorizedException('Invalid refresh token.');
     }
 
     if (existing.revoked || existing.used) {
@@ -142,15 +142,14 @@ export class AuthService {
       await this.prisma.refreshToken.update({
         where: { id: existing.id },
         data: { revoked: true },
-        });
+      });
       throw new UnauthorizedException('Refresh token has expired.');
     }
 
     await this.prisma.refreshToken.update({
-        where: { id: existing.id },
-        data: { revoked: true, used: true },
-    })
-        
+      where: { id: existing.id },
+      data: { revoked: true, used: true },
+    });
 
     const tokens = await this.generateTokensForUser({
       id: existing.user.id,
