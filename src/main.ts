@@ -7,12 +7,11 @@ async function bootstrap() {
   const frontendUrl = process.env.FRONTEND_URL;
 
   app.enableCors({
-    origin: frontendUrl
-      ? [frontendUrl]
+    origin: process.env.FRONTEND_URL
+      ? [process.env.FRONTEND_URL]
       : ['http://localhost:3001', 'http://127.0.0.1:3001'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: false,
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   });
 
   await app.listen(process.env.PORT ?? 3000);
